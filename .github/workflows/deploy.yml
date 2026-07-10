@@ -1,0 +1,77 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    branches: [main]
+    types:
+      - completed
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    environment: production
+
+    steps:
+      - name: Write production env file and deploy via docker compose
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          envs: DATABASE_URL,JWT_SECRET,API_KEY_PEPPER,PLATFORM_SECRET_KEY,USDC_ISSUER,STELLAR_NETWORK,STELLAR_HORIZON_URL,FRONTEND_URL,DEPLOY_PATH
+          env:
+            DATABASE_URL: ${{ secrets.DATABASE_URL }}
+            JWT_SECRET: ${{ secrets.JWT_SECRET }}
+            API_KEY_PEPPER: ${{ secrets.API_KEY_PEPPER }}
+            PLATFORM_SECRET_KEY: ${{ secrets.PLATFORM_SECRET_KEY }}
+            USDC_ISSUER: ${{ secrets.USDC_ISSUER }}
+            STELLAR_NETWORK: ${{ secrets.STELLAR_NETWORK }}
+            STELLAR_HORIZON_URL: ${{ secrets.STELLAR_HORIZON_URL }}
+            FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
+            DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          script: |
+            set -euo pipefail
+            cd "$DEPLOY_PATH"
+            git fetch origin main
+            git reset --hard origin/main
+
+            cat > backend/.env <<EOF
+            NODE_ENV=production
+            DATABASE_URL=${DATABASE_URL}
+            JWT_SECRET=${JWT_SECRET}
+            API_KEY_PEPPER=${API_KEY_PEPPER}
+            PLATFORM_SECRET_KEY=${PLATFORM_SECRET_KEY}
+            USDC_ISSUER=${USDC_ISSUER}
+            STELLAR_NETWORK=${STELLAR_NETWORK}
+            STELLAR_HORIZON_URL=${STELLAR_HORIZON_URL}
+            FRONTEND_URL=${FRONTEND_URL}
+            EOF
+
+            docker compose -f docker-compose.prod.yml up -d --build
+            docker compose -f docker-compose.prod.yml exec -T backend node db/migrate.js
+
+      - name: Wait for backend to become healthy
+        run: |
+          for i in $(seq 1 10); do
+            if curl -fsS "${{ secrets.DEPLOY_HEALTH_URL }}/health"; then
+              echo "Health check passed"
+              exit 0
+            fi
+            echo "Health check attempt $i failed, retrying in 5s..."
+            sleep 5
+          done
+          echo "Health check failed after 10 attempts"
+          exit 1
+
+      - name: Post deploy status to Slack
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: Deployment to production completed.
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always()

@@ -1,0 +1,10 @@
+{
+  "name": "novaraise",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "lint": "npm run lint --prefix backend && npm run lint --prefix frontend",
+    "format": "npm run format --prefix frontend",
+    "test:e2e": "npx playwright test"
+  }
+}

@@ -47,7 +47,14 @@ jobs:
         working-directory: ./backend
         env:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/novaraise_test
-        run: npm run migrate
+        run: |
+          psql $DATABASE_URL -f db/schema.sql
+          psql $DATABASE_URL -c "CREATE TABLE IF NOT EXISTS schema_migrations (filename TEXT PRIMARY KEY, applied_at TIMESTAMPTZ DEFAULT NOW());"
+          for f in db/migrations/*.sql; do
+            filename=$(basename "$f")
+            psql $DATABASE_URL -c "INSERT INTO schema_migrations (filename) VALUES ('$filename') ON CONFLICT DO NOTHING;"
+          done
+          npm run migrate
 
       - name: Run test suite
         working-directory: ./backend

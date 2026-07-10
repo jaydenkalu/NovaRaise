@@ -53,8 +53,10 @@ CREATE TABLE campaigns (
   featured_note       TEXT,
   content_fingerprint TEXT,
   is_flagged_duplicate BOOLEAN DEFAULT FALSE,
+  wallet_secret_encrypted TEXT,
   created_at          TIMESTAMPTZ DEFAULT NOW()
 );
+CREATE INDEX IF NOT EXISTS idx_campaigns_wallet_public_key ON campaigns(wallet_public_key);
 CREATE TABLE IF NOT EXISTS campaign_updates (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   campaign_id UUID NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,

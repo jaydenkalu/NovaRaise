@@ -16,7 +16,7 @@ Sentry.init({
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Sentry.ErrorBoundary fallback={({ eventId }) => (
         <main style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', padding: '2rem' }}>
           <div style={{ maxWidth: '420px', textAlign: 'center' }}>

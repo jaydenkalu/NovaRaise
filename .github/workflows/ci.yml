@@ -47,7 +47,7 @@ jobs:
         working-directory: ./backend
         env:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/novaraise_test
-        run: npm run migrate
+        run: psql $DATABASE_URL -f db/schema.sql && npm run migrate
 
       - name: Run test suite
         working-directory: ./backend

@@ -1,6 +1,6 @@
 # Audit: Issue #323 — Campaign Status Transition Race Condition
 
-**Repository:** Savitura/novaraise  
+**Repository:** jaydenkalu/NovaRaise  
 **Issue:** #323 — Campaign status transition race condition (two UPDATEs not atomic)  
 **Audit date:** 2026-06-26  
 **Status:** **Resolved**

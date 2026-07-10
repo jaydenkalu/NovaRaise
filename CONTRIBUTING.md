@@ -9,7 +9,7 @@ NovaRaise uses [GrantFox](https://grantfox.xyz) to fund and coordinate open-sour
 ### Docker (fastest)
 
 ```bash
-git clone https://github.com/Savitura/novaraise.git
+git clone https://github.com/jaydenkalu/NovaRaise.git
 cd novaraise
 cp backend/.env.example backend/.env
 docker compose up
@@ -42,7 +42,7 @@ curl "https://friendbot.stellar.org?addr=<PLATFORM_PUBLIC_KEY>"
 
 ## Picking Up an Issue
 
-1. Find an open, unassigned issue in [GitHub Issues](https://github.com/Savitura/novaraise/issues)
+1. Find an open, unassigned issue in [GitHub Issues](https://github.com/jaydenkalu/NovaRaise/issues)
 2. Comment to claim it — wait for assignment before starting
 3. Fork and branch off `main`: `feat/issue-<number>-short-description`
 4. Stay current with `git rebase origin/main`

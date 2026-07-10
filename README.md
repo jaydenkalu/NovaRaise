@@ -1,6 +1,6 @@
 # NovaRaise
 
-[![CI](https://github.com/Savitura/novaraise/actions/workflows/ci.yml/badge.svg)](https://github.com/Savitura/novaraise/actions/workflows/ci.yml)
+[![CI](https://github.com/jaydenkalu/NovaRaise/actions/workflows/ci.yml/badge.svg)](https://github.com/jaydenkalu/NovaRaise/actions/workflows/ci.yml)
 
 **Blockchain-powered crowdfunding for the internet.**
 
@@ -86,7 +86,7 @@ novaraise/
 ### With Docker (recommended)
 
 ```bash
-git clone https://github.com/Savitura/novaraise
+git clone https://github.com/jaydenkalu/NovaRaise
 cd novaraise
 cp backend/.env.example backend/.env
 docker compose up

@@ -127,6 +127,6 @@ Closes #436
    ```
 
 3. Create the PR at:
-   https://github.com/Savitura/novaraise/compare/feat/feature-flags-system?expand=1
+   https://github.com/jaydenkalu/NovaRaise/compare/feat/feature-flags-system?expand=1
 
 4. Copy the PR description above into the PR body.

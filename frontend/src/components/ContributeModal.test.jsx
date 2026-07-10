@@ -289,7 +289,7 @@ describe('ContributeModal', () => {
       );
       await user.click(screen.getByRole('button', { name: /switch to custodial/i }));
       await waitFor(() =>
-        expect(screen.getByRole('radio', { name: /crowdpay wallet/i })).toBeChecked()
+        expect(screen.getByRole('radio', { name: /novaraise wallet/i })).toBeChecked()
       );
     });
   });

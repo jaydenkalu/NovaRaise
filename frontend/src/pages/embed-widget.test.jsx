@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { initCrowdPayEmbed } from '../embed-widget/index';
+import { initNovaRaiseEmbed } from '../embed-widget/index';
 
 describe('embed-widget script', () => {
   let container;
@@ -25,13 +25,13 @@ describe('embed-widget script', () => {
 
   it('is a no-op when data-campaign is missing', () => {
     createScript({ 'data-theme': 'dark' });
-    initCrowdPayEmbed(script);
+    initNovaRaiseEmbed(script);
     expect(document.querySelectorAll('iframe').length).toBe(0);
   });
 
   it('injects an iframe pointing at /embed/campaigns/:id with the theme', () => {
     createScript({ 'data-campaign': '42', 'data-theme': 'dark' });
-    initCrowdPayEmbed(script);
+    initNovaRaiseEmbed(script);
     const iframe = document.querySelector('iframe');
     expect(iframe).toBeTruthy();
     expect(iframe.src).toContain('/embed/campaigns/42?theme=dark');
@@ -39,13 +39,13 @@ describe('embed-widget script', () => {
 
   it('defaults theme to light', () => {
     createScript({ 'data-campaign': '7' });
-    initCrowdPayEmbed(script);
+    initNovaRaiseEmbed(script);
     expect(document.querySelector('iframe').src).toContain('theme=light');
   });
 
   it('adds sandbox and payment allow', () => {
     createScript({ 'data-campaign': '7' });
-    initCrowdPayEmbed(script);
+    initNovaRaiseEmbed(script);
     const iframe = document.querySelector('iframe');
     expect(iframe.getAttribute('sandbox')).toContain('allow-scripts');
     expect(iframe.getAttribute('sandbox')).toContain('allow-same-origin');
@@ -54,7 +54,7 @@ describe('embed-widget script', () => {
 
   it('resizes iframe on parent resize message', () => {
     createScript({ 'data-campaign': '7' });
-    initCrowdPayEmbed(script);
+    initNovaRaiseEmbed(script);
     const iframe = document.querySelector('iframe');
     window.dispatchEvent(new MessageEvent('message', { data: { type: 'resize', height: 420 } }));
     expect(iframe.style.height).toBe('420px');
@@ -62,25 +62,25 @@ describe('embed-widget script', () => {
 
   it('forwards contribution events as CustomEvent', () => {
     createScript({ 'data-campaign': '7' });
-    initCrowdPayEmbed(script);
+    initNovaRaiseEmbed(script);
     const handler = vi.fn();
-    window.addEventListener('crowdpay:contribution', handler);
+    window.addEventListener('novaraise:contribution', handler);
     window.dispatchEvent(
-      new MessageEvent('message', { data: { type: 'crowdpay:contribution', amount: '10' } })
+      new MessageEvent('message', { data: { type: 'novaraise:contribution', amount: '10' } })
     );
     expect(handler).toHaveBeenCalled();
     expect(handler.mock.calls[0][0].detail).toEqual({
-      type: 'crowdpay:contribution',
+      type: 'novaraise:contribution',
       amount: '10',
     });
   });
 
   it('forwards open message into iframe', () => {
     createScript({ 'data-campaign': '7' });
-    initCrowdPayEmbed(script);
+    initNovaRaiseEmbed(script);
     const iframe = document.querySelector('iframe');
     const popSpy = vi.spyOn(iframe.contentWindow, 'postMessage').mockImplementation(() => {});
-    window.dispatchEvent(new CustomEvent('crowdpay:open', { detail: { campaignId: '7' } }));
+    window.dispatchEvent(new CustomEvent('novaraise:open', { detail: { campaignId: '7' } }));
     expect(popSpy).toHaveBeenCalledWith({ type: 'open' }, '*');
   });
 });

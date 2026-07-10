@@ -95,7 +95,7 @@ export default function Navbar() {
           aria-label={t('nav.homeAria')}
           aria-current={pathname === '/' ? 'page' : undefined}
         >
-          CrowdPay
+          NovaRaise
         </Link>
         <div className="nav-links">
           <select

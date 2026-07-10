@@ -660,7 +660,7 @@ export default function Campaign() {
 
   useEffect(() => {
     if (!campaign) return;
-    document.title = `${campaign.title} | CrowdPay`;
+    document.title = `${campaign.title} | NovaRaise`;
 
     // Basic meta tag updates (SPA approach)
     const updateMeta = (name, content, property = false) => {
@@ -723,9 +723,9 @@ export default function Campaign() {
   const pendingInvites = members.filter((m) => !m.accepted_at);
   const campaignUrl = `${window.location.origin}/campaigns/${id}`;
   const apiBase = (import.meta.env.VITE_API_BASE_URL || `${window.location.origin}`).replace(/\/+$/, "");
-  const widgetEmbedCode = `<iframe src="${window.location.origin}/widget/campaigns/${id}" width="320" height="140" frameborder="0" style="border-radius:10px" title="CrowdPay funding widget"></iframe>`;
-  const fullEmbedCode = `<iframe src="${window.location.origin}/embed/campaigns/${id}" width="480" height="280" frameborder="0" title="CrowdPay campaign embed"></iframe>`;
-  const badgeMarkdown = `[![CrowdPay](${apiBase}/api/campaigns/${id}/badge.svg)](${campaignUrl})`;
+  const widgetEmbedCode = `<iframe src="${window.location.origin}/widget/campaigns/${id}" width="320" height="140" frameborder="0" style="border-radius:10px" title="NovaRaise funding widget"></iframe>`;
+  const fullEmbedCode = `<iframe src="${window.location.origin}/embed/campaigns/${id}" width="480" height="280" frameborder="0" title="NovaRaise campaign embed"></iframe>`;
+  const badgeMarkdown = `[![NovaRaise](${apiBase}/api/campaigns/${id}/badge.svg)](${campaignUrl})`;
 
   function canEditUpdate(update) {
     return Date.now() - new Date(update.created_at).getTime() <= 24 * 60 * 60 * 1000;
@@ -1150,7 +1150,7 @@ export default function Campaign() {
             const shareUrl = referralUrl || window.location.href;
             const pct = Math.min(100, (campaign.raised_amount / campaign.target_amount) * 100).toFixed(1);
             const daysLeft = Math.max(0, Math.ceil((new Date(campaign.end_date) - new Date()) / (1000 * 60 * 60 * 24)));
-            const text = encodeURIComponent(`Back ${campaign.title} on CrowdPay — ${pct}% funded, ${daysLeft} days left. Built on Stellar. ${shareUrl} #Stellar #CrowdPay`);
+            const text = encodeURIComponent(`Back ${campaign.title} on NovaRaise — ${pct}% funded, ${daysLeft} days left. Built on Stellar. ${shareUrl} #Stellar #NovaRaise`);
             window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
           }}
           aria-label="Share on X"
@@ -1171,7 +1171,7 @@ export default function Campaign() {
           onClick={() => {
             const shareUrl = referralUrl || window.location.href;
             const pct = Math.min(100, (campaign.raised_amount / campaign.target_amount) * 100).toFixed(1);
-            const text = encodeURIComponent(`Hey! Check out this campaign on CrowdPay: ${campaign.title}. They're ${pct}% funded and need your help. ${shareUrl}`);
+            const text = encodeURIComponent(`Hey! Check out this campaign on NovaRaise: ${campaign.title}. They're ${pct}% funded and need your help. ${shareUrl}`);
             window.open(`https://wa.me/?text=${text}`, '_blank');
           }}
           aria-label="Share on WhatsApp"

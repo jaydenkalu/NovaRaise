@@ -264,7 +264,7 @@ export default function WithdrawalsSection({ campaign, milestones = [], user, to
       <h2 style={styles.h2}>Manual fund release</h2>
       <p style={styles.intro}>
         Funds leave the campaign wallet only after <strong>you</strong> (creator) and{' '}
-        <strong>CrowdPay</strong> (platform) both approve the same transaction. Every step is logged
+        <strong>NovaRaise</strong> (platform) both approve the same transaction. Every step is logged
         for review.
       </p>
 

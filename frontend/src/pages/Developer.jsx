@@ -299,7 +299,7 @@ export default function Developer() {
     >
       <h1 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '0.35rem' }}>Developer</h1>
       <p style={{ color: 'var(--color-text-hint)', marginBottom: '2rem', fontSize: '0.95rem' }}>
-        API keys and webhooks for integrating CrowdPay as a funding backend. Public API
+        API keys and webhooks for integrating NovaRaise as a funding backend. Public API
         documentation:{' '}
         <a
           href="/v1/docs"
@@ -541,7 +541,7 @@ export default function Developer() {
           <input
             value={hookUrl}
             onChange={(e) => setHookUrl(e.target.value)}
-            placeholder="https://example.com/crowdpay-webhook"
+            placeholder="https://example.com/novaraise-webhook"
             required
           />
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>

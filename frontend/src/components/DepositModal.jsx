@@ -128,7 +128,7 @@ export default function DepositModal({ onClose, onSuccess }) {
     setLoadingLabel('Preparing deposit…');
     setError('');
     try {
-      const popup = window.open('', 'crowdpay-wallet-deposit', 'popup,width=520,height=780');
+      const popup = window.open('', 'novaraise-wallet-deposit', 'popup,width=520,height=780');
       popupRef.current = popup;
 
       const result = await api.startWalletDeposit({
@@ -174,7 +174,7 @@ export default function DepositModal({ onClose, onSuccess }) {
               Add Funds
             </h2>
             <p style={styles.subtitle}>
-              Deposit fiat currency into your CrowdPay wallet via a supported anchor.
+              Deposit fiat currency into your NovaRaise wallet via a supported anchor.
             </p>
 
             {balance && (
@@ -222,7 +222,7 @@ export default function DepositModal({ onClose, onSuccess }) {
 
               {selectedAnchor && (
                 <div className="alert alert--info" style={{ marginBottom: '1rem' }} role="status">
-                  <strong>{selectedAnchor.name}.</strong> CrowdPay will open the anchor’s hosted
+                  <strong>{selectedAnchor.name}.</strong> NovaRaise will open the anchor’s hosted
                   flow. Once the deposit completes, the funds will appear in your custodial wallet.
                 </div>
               )}
@@ -265,7 +265,7 @@ export default function DepositModal({ onClose, onSuccess }) {
               Complete your deposit
             </h2>
             <p className="alert alert--info" style={{ marginBottom: '1rem' }} role="status">
-              Finish the hosted deposit flow in the popup window. CrowdPay is polling the anchor and
+              Finish the hosted deposit flow in the popup window. NovaRaise is polling the anchor and
               will update your wallet balance automatically when the funds arrive.
             </p>
             {kycRequired && (

@@ -241,7 +241,7 @@ export default function Profile() {
         <p
           style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem', marginBottom: '1rem' }}
         >
-          This is a custodial wallet managed by CrowdPay.
+          This is a custodial wallet managed by NovaRaise.
         </p>
 
         <div

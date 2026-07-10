@@ -341,7 +341,7 @@ export default function ContributeModal({
   }, [phase]);
 
   async function submitWithCustodial() {
-    setLoadingLabel('Submitting with CrowdPay wallet…');
+    setLoadingLabel('Submitting with NovaRaise wallet…');
     return api.contribute(
       {
         campaign_id: campaign.id,
@@ -420,7 +420,7 @@ export default function ContributeModal({
       throw new Error('No deposit anchor is available right now.');
     }
 
-    const popup = window.open('', 'crowdpay-anchor-deposit', 'popup,width=520,height=780');
+    const popup = window.open('', 'novaraise-anchor-deposit', 'popup,width=520,height=780');
     anchorPopupRef.current = popup;
 
     setLoadingLabel('Preparing deposit flow…');
@@ -606,7 +606,7 @@ export default function ContributeModal({
                         checked={paymentMethod === 'custodial'}
                         onChange={() => setPaymentMethod('custodial')}
                       />
-                      <div className="asset-picker__code">CrowdPay wallet</div>
+                      <div className="asset-picker__code">NovaRaise wallet</div>
                       <div className="asset-picker__hint">Uses your existing custodial balance</div>
                     </label>
                   )}
@@ -623,7 +623,7 @@ export default function ContributeModal({
                       />
                       <div className="asset-picker__code">Pay with Freighter</div>
                       <div className="asset-picker__hint">
-                        You sign in-browser; CrowdPay never sees your key
+                        You sign in-browser; NovaRaise never sees your key
                       </div>
                     </label>
                   )}
@@ -640,7 +640,7 @@ export default function ContributeModal({
                     <div className="asset-picker__code">Pay with Freighter</div>
                     <div className="asset-picker__hint">
                       {freighterAvailable
-                        ? 'You sign in-browser; CrowdPay never sees your key'
+                        ? 'You sign in-browser; NovaRaise never sees your key'
                         : 'Freighter not detected — see alternatives below'}
                     </div>
                   </label>
@@ -666,17 +666,39 @@ export default function ContributeModal({
                 {freighterChecked &&
                   !freighterAvailable &&
                   (paymentMethod === 'freighter' || guestFreighterMode) && (
-                    <span id="contrib-wallet-help" style={styles.help}>
-                      Freighter extension not detected.{' '}
-                      <a
-                        href="https://www.freighter.app/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Install Freighter
-                      </a>{' '}
-                      to contribute from your own Stellar wallet.
-                    </span>
+                    <div id="contrib-wallet-help" style={{ ...styles.help, display: 'block', marginTop: '0.5rem' }}>
+                      <p style={{ margin: 0 }}>
+                        Freighter extension not detected.{' '}
+                        <a
+                          href="https://www.freighter.app/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Get Freighter
+                        </a>{' '}
+                        to contribute from your own Stellar wallet.
+                      </p>
+                      <div style={{ marginTop: '0.5rem', display: 'flex', gap: '0.5rem' }}>
+                        <a
+                          id="contrib-stellar-pay-link"
+                          className="btn-secondary"
+                          href={getStellarPayUri()}
+                          style={{ display: 'inline-block', textDecoration: 'none', padding: '0.25rem 0.5rem', fontSize: '0.8rem', minHeight: 'auto' }}
+                        >
+                          Pay manually
+                        </a>
+                        {!guestFreighterMode && (
+                          <button
+                            type="button"
+                            className="btn-secondary"
+                            onClick={() => setPaymentMethod('custodial')}
+                            style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem', minHeight: 'auto' }}
+                          >
+                            Switch to custodial
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   )}
               </fieldset>
 
@@ -715,7 +737,7 @@ export default function ContributeModal({
                       style={{ marginBottom: '1rem' }}
                       role="status"
                     >
-                      <strong>{selectedAnchor.name}.</strong> CrowdPay will open the anchor’s hosted
+                      <strong>{selectedAnchor.name}.</strong> NovaRaise will open the anchor’s hosted
                       KYC and payment flow, wait for {selectedAnchor.asset.code} to arrive in your
                       Stellar wallet, and then submit the campaign contribution for you.
                     </div>
@@ -867,7 +889,7 @@ export default function ContributeModal({
 
               {paymentMethod === 'freighter' && (
                 <div className="alert alert--info" style={{ marginTop: '0.85rem' }} role="status">
-                  <strong>Non-custodial payment.</strong> CrowdPay will prepare the transaction,
+                  <strong>Non-custodial payment.</strong> NovaRaise will prepare the transaction,
                   Freighter will ask you to sign it locally, and only the signed XDR comes back for
                   submission.
                 </div>
@@ -876,7 +898,7 @@ export default function ContributeModal({
               {paymentMethod === 'anchor' && selectedAnchor && (
                 <div className="alert alert--info" style={{ marginTop: '0.85rem' }} role="status">
                   <strong>Anchor deposit.</strong> This starts a SEP-24 flow with{' '}
-                  {selectedAnchor.name}. After the deposit confirms, CrowdPay submits the normal
+                  {selectedAnchor.name}. After the deposit confirms, NovaRaise submits the normal
                   Stellar contribution from your custodial wallet.
                 </div>
               )}
@@ -994,7 +1016,7 @@ export default function ContributeModal({
               Complete your deposit
             </h2>
             <p className="alert alert--info" style={{ marginBottom: '1rem' }} role="status">
-              Finish the hosted deposit flow in the popup window. CrowdPay is polling the anchor and
+              Finish the hosted deposit flow in the popup window. NovaRaise is polling the anchor and
               will submit the campaign contribution automatically when the funds arrive.
             </p>
             {anchorSession?.anchor_transaction_id && (
@@ -1155,7 +1177,7 @@ export default function ContributeModal({
     const shareUrl = window.location.href;
     const pct = Math.min(100, (campaign.raised_amount / campaign.target_amount) * 100).toFixed(1);
     const daysLeft = Math.max(0, Math.ceil((new Date(campaign.end_date) - new Date()) / (1000 * 60 * 60 * 24)));
-    const text = encodeURIComponent(`Back ${campaign.title} on CrowdPay — ${pct}% funded, ${daysLeft} days left. Built on Stellar. ${shareUrl} #Stellar #CrowdPay`);
+    const text = encodeURIComponent(`Back ${campaign.title} on NovaRaise — ${pct}% funded, ${daysLeft} days left. Built on Stellar. ${shareUrl} #Stellar #NovaRaise`);
     window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
   }}
 >
@@ -1169,7 +1191,7 @@ export default function ContributeModal({
   onClick={() => {
     const shareUrl = window.location.href;
     const pct = Math.min(100, (campaign.raised_amount / campaign.target_amount) * 100).toFixed(1);
-    const text = encodeURIComponent(`Hey! Check out this campaign on CrowdPay: ${campaign.title}. They're ${pct}% funded and need your help. ${shareUrl}`);
+    const text = encodeURIComponent(`Hey! Check out this campaign on NovaRaise: ${campaign.title}. They're ${pct}% funded and need your help. ${shareUrl}`);
     window.open(`https://wa.me/?text=${text}`, '_blank');
   }}
 >

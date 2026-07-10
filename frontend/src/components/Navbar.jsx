@@ -65,21 +65,6 @@ export default function Navbar() {
     }
   }
 
-  async function handleMarkRead(id) {
-    try {
-      await api.markNotificationRead(id);
-      setNotifications((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, read_at: new Date().toISOString() } : n))
-      );
-    } catch (_err) {}
-  }
-
-  async function handleMarkAllRead() {
-    try {
-      await api.markAllNotificationsRead();
-      setNotifications((prev) => prev.map((n) => ({ ...n, read_at: new Date().toISOString() })));
-    } catch (_err) {}
-  }
 
   async function handleLogout() {
     await logout();

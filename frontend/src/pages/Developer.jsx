@@ -12,6 +12,53 @@ const EVENT_OPTIONS = [
 
 const SCOPE_OPTIONS = ['read', 'write', 'withdrawals', 'developer', 'full'];
 
+const V1_ENDPOINTS = [
+  {
+    id: 'list-campaigns',
+    label: 'GET /v1/campaigns (List campaigns)',
+    path: '/campaigns',
+    method: 'GET',
+    auth: false,
+    queryFields: ['search', 'status', 'limit'],
+    bodyTemplate: null,
+  },
+  {
+    id: 'get-campaign',
+    label: 'GET /v1/campaigns/:id (Get campaign details)',
+    path: '/campaigns/:id',
+    method: 'GET',
+    auth: false,
+    pathFields: ['id'],
+    bodyTemplate: null,
+  },
+  {
+    id: 'list-contributions',
+    label: 'GET /v1/campaigns/:id/contributions (List contributions)',
+    path: '/campaigns/:id/contributions',
+    method: 'GET',
+    auth: true,
+    pathFields: ['id'],
+    bodyTemplate: null,
+  },
+  {
+    id: 'record-contribution',
+    label: 'POST /v1/campaigns/:id/contributions (Record contribution from Tx Hash)',
+    path: '/campaigns/:id/contributions',
+    method: 'POST',
+    auth: true,
+    pathFields: ['id'],
+    bodyTemplate: JSON.stringify({ tx_hash: 'YOUR_STELLAR_TX_HASH' }, null, 2),
+  },
+  {
+    id: 'get-me',
+    label: 'GET /v1/users/me (Get api key owner profile)',
+    path: '/users/me',
+    method: 'GET',
+    auth: true,
+    bodyTemplate: null,
+  },
+];
+
 const V1_API_BASE = `${(import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '')}/api/v1`;
 
 export default function Developer() {
@@ -124,7 +171,9 @@ export default function Developer() {
         setExplorerPathParams(parsed.pathParams || {});
         setExplorerQuery(parsed.query || {});
         setExplorerBody(parsed.body || '');
-      } catch {}
+      } catch (_err) {
+        /* ignore */
+      }
     } else {
       const ep = v1Endpoints.find((e) => e.id === explorerEndpoint);
       setExplorerPathParams({});

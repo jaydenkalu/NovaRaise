@@ -93,6 +93,7 @@ function PlatformHealthPanel() {
   const [health, setHealth] = useState(null);
   const [webhooks, setWebhooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [retryingId, setRetryingId] = useState(null);
 
   const load = useCallback(() => {
     setLoading(true);
@@ -117,7 +118,7 @@ function PlatformHealthPanel() {
       await api.adminRetryWebhookDelivery(delivery.id, { kind: delivery.delivery_kind });
       load();
     } catch (err) {
-      alert(err.message || 'Retry failed');
+      window.alert(err.message || 'Retry failed');
     } finally {
       setRetryingId(null);
     }
@@ -239,6 +240,109 @@ function PlatformHealthPanel() {
 }
 
 function WithdrawalQueue() {
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [review, setReview] = useState(null);
+  const [error, setError] = useState('');
+  const [detail, setDetail] = useState(null);
+  const [contributions, setContributions] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [busy, setBusy] = useState(false);
+  const [rejectReason, setRejectReason] = useState('');
+  const [canApprove, setCanApprove] = useState(false);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [w, cap] = await Promise.all([
+        api.getAdminWithdrawals({ status: 'pending' }),
+        api.getWithdrawalCapabilities().catch(() => ({ can_approve_platform: false })),
+      ]);
+      setRows(w);
+      setCanApprove(!!cap.can_approve_platform);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  async function openReview(row) {
+    setReview(row);
+    setError('');
+    setDetail(null);
+    setContributions([]);
+    setEvents([]);
+    try {
+      const [d, evs, contribs] = await Promise.all([
+        api.getWithdrawal(row.id),
+        api.getWithdrawalEvents(row.id).catch(() => []),
+        api.getAdminCampaignContributions(row.campaign_id).catch(() => ({ contributions: [] })),
+      ]);
+      setDetail(d);
+      setEvents(evs);
+      setContributions(contribs.contributions || contribs || []);
+    } catch (err) {
+      setError(err.message || 'Could not load withdrawal details');
+    }
+  }
+
+  function closeReview() {
+    setReview(null);
+    setDetail(null);
+    setContributions([]);
+    setEvents([]);
+    setRejectReason('');
+    setError('');
+  }
+
+  async function approve() {
+    if (!window.confirm('Approve and submit this withdrawal to Stellar?')) return;
+    setBusy(true);
+    setError('');
+    try {
+      await api.approveWithdrawalPlatform(review.id);
+      closeReview();
+      load();
+    } catch (err) {
+      setError(err.message || 'Approval failed');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function reject() {
+    const reason = rejectReason.trim();
+    if (!reason) {
+      window.alert('A rejection reason is required.');
+      return;
+    }
+    if (!window.confirm('Reject this withdrawal request?')) return;
+    setBusy(true);
+    setError('');
+    try {
+      await api.rejectWithdrawal(review.id, { reason });
+      closeReview();
+      load();
+    } catch (err) {
+      setError(err.message || 'Rejection failed');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <section style={{ padding: '1rem', background: 'var(--color-bg)' }} aria-label="Fund release">
+        <p style={{ color: 'var(--color-text-hint)', fontSize: '0.9rem' }}>Loading pending requests…</p>
+      </section>
+    );
+  }
+
   return (
     <>
       {rows.length === 0 ? (
@@ -434,7 +538,7 @@ function DisputeManagement() {
       const data = await api.getAdminDispute(dispute.id);
       setDetail(data);
     } catch (err) {
-      alert(err.message || 'Could not load dispute');
+      window.alert(err.message || 'Could not load dispute');
     }
   }
 
@@ -459,7 +563,7 @@ function DisputeManagement() {
       );
       closeDispute();
     } catch (err) {
-      alert(err.message || 'Could not update dispute');
+      window.alert(err.message || 'Could not update dispute');
     } finally {
       setBusy(false);
     }
@@ -651,7 +755,7 @@ function KycOversight() {
       await api.adminUpdateUserKyc(userId, { kyc_status, reason: reason || undefined });
       load();
     } catch (err) {
-      alert(err.message || 'KYC update failed');
+      window.alert(err.message || 'KYC update failed');
     } finally {
       setBusyId(null);
     }
@@ -665,7 +769,7 @@ function KycOversight() {
       updateUser(userData);
       navigate('/dashboard');
     } catch (err) {
-      alert(err.message || 'Could not start impersonation');
+      window.alert(err.message || 'Could not start impersonation');
     } finally {
       setBusyId(null);
     }

@@ -66,7 +66,6 @@ export default function CreateCampaign() {
     max_per_user: location.state?.prefill?.max_per_user || '',
     show_backer_amounts: location.state?.prefill?.show_backer_amounts ?? true,
     milestones: [],
-    category: '',
   });
   const [coverImageFile, setCoverImageFile] = useState(null);
   const [coverImagePreview, setCoverImagePreview] = useState('');

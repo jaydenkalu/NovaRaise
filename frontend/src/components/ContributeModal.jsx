@@ -60,8 +60,8 @@ function matchTier(tiers, amount) {
 }
 
 function createIdempotencyKey() {
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-    return crypto.randomUUID();
+  if (typeof window !== 'undefined' && window.crypto && typeof window.crypto.randomUUID === 'function') {
+    return window.crypto.randomUUID();
   }
   return `contrib-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 }

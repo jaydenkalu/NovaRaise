@@ -143,7 +143,7 @@ export default function Home() {
       setTotal(nextTotal);
       setPage((p) => p + 1);
 
-      requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
         window.scrollTo({ top: scrollPosition });
       });
     } catch (err) {

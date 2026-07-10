@@ -15,7 +15,7 @@ export default function ImpersonationBanner() {
       await exitImpersonation();
       navigate('/admin');
     } catch (err) {
-      alert(err.message || 'Could not exit impersonation mode');
+      window.alert(err.message || 'Could not exit impersonation mode');
     } finally {
       setBusy(false);
     }
